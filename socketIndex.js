@@ -54,6 +54,7 @@ requestHandler[requestId.LOGIN] = (ws, data) => {
 // required message.DouNiuQiangZhuang qiangZhuang = 6;
 // required string rule = 7;
 // repeated message.RoomPlayerStatusInfo roomPlayerList = 8;
+this._roundNum = 10
 requestHandler[requestId.ROOMINFO] = (ws, data) => {
     ws.send(JSON.stringify(
         {
@@ -62,7 +63,7 @@ requestHandler[requestId.ROOMINFO] = (ws, data) => {
                 roomId: 1111,
                 ownerId: 1,
                 playerNum: 3,
-                round: 2,
+                round: this._roundNum,
                 cardPattern: 1,
                 qiangZhuang: 2,     // 1-inturn, 2-look decide
                 rule: "no rules",
@@ -83,6 +84,22 @@ requestHandler[requestId.ROOMINFO] = (ws, data) => {
                         },
                         isReady: true
                     },
+                    {
+                        playerInfo: {
+                            id: 3,
+                            name: "player robot1",
+                            headImgUrl: "http://pic.58pic.com/58pic/11/38/84/16w58PICegT.jpg"
+                        },
+                        isReady: true
+                    },
+                    {
+                        playerInfo: {
+                            id: 4,
+                            name: "player robot1",
+                            headImgUrl: "http://pic.58pic.com/58pic/11/38/84/16w58PICegT.jpg"
+                        },
+                        isReady: true
+                    },
                 ]
             }
         }
@@ -94,7 +111,7 @@ requestHandler[requestId.ROOMINFO] = (ws, data) => {
             data: {
                 playerInfo:
                     {
-                        id: 3,
+                        id: 5,
                         name: "player robot2",
                         headImgUrl: "https://b-ssl.duitang.com/uploads/item/201501/16/20150116012601_zrzZh.thumb.700_0.jpeg"
                     },
@@ -107,7 +124,7 @@ requestHandler[requestId.ROOMINFO] = (ws, data) => {
             id: responseId.PLAYER_READY,
             data: {
                 text: "Player3 is ready",
-                playerId: 3,
+                playerId: 5,
                 isReady: true
             }
         }
@@ -179,7 +196,7 @@ requestHandler[requestId.BANKER] = (ws, data) => {
             id: responseId.BANKER,
             data: {
                 text: "banker is decided",
-                bankerPlayerId: 3
+                bankerPlayerId: 4
             }
         }
     ))
@@ -204,6 +221,14 @@ requestHandler[requestId.STAKE] = (ws, data) => {
                     {
                         playerId: 3,
                         stake: 3
+                    },
+                    {
+                        playerId: 4,
+                        stake: 4
+                    },
+                    {
+                        playerId: 5,
+                        stake: 5
                     },
                 ]
             }
@@ -244,12 +269,22 @@ requestHandler[requestId.PLAYER_SHOW_DOWN] = (ws, data) => {
                         cardIdList: [5, 47, 22, 8, 32],
                         cardLevel: 7
                     },
+                    {
+                        playerId: 4,
+                        cardIdList: [5, 47, 22, 8, 6],
+                        cardLevel: 7
+                    },
+                    {
+                        playerId: 5,
+                        cardIdList: [5, 47, 22, 8, 3],
+                        cardLevel: 7
+                    },
                 ]
             }
         }
     ))
 
-    if (this._roundId == 1)
+    if (this._roundId < this._roundNum)
         ws.send(JSON.stringify(
             {
                 id: responseId.ROUND_END,
@@ -259,7 +294,7 @@ requestHandler[requestId.PLAYER_SHOW_DOWN] = (ws, data) => {
                         {
                             playerId: 1,
                             stake: 1,
-                            roundScore: 11,
+                            roundScore: 111,
                             totalScore: 111
                         },
                         {
@@ -274,12 +309,25 @@ requestHandler[requestId.PLAYER_SHOW_DOWN] = (ws, data) => {
                             roundScore: 33,
                             totalScore: 333
                         },
+                        {
+                            playerId: 4,
+                            stake: 4,
+                            roundScore: 44,
+                            totalScore: 444
+                        },
+                        {
+                            playerId: 5,
+                            stake: 5,
+                            roundScore: 55,
+                            totalScore: 555
+                        },
                     ]
                 }
             }
         ))
 
-    if (this._roundId == 2)
+    if (this._roundId >= this._roundNum) {
+        this._roundId = 0
         ws.send(JSON.stringify(
             {
                 id: responseId.ROOM_END,
@@ -313,10 +361,29 @@ requestHandler[requestId.PLAYER_SHOW_DOWN] = (ws, data) => {
                             statsLevel9: 3,
                             totalScore: 3333
                         },
+                        {
+                            playerId: 4,
+                            statsWuXiao: 4,
+                            statsWuHua: 4,
+                            statsZhaDan: 4,
+                            statsLevel10: 4,
+                            statsLevel9: 4,
+                            totalScore: 4444
+                        },
+                        {
+                            playerId: 5,
+                            statsWuXiao: 5,
+                            statsWuHua: 5,
+                            statsZhaDan: 5,
+                            statsLevel10: 5,
+                            statsLevel9: 5,
+                            totalScore: 5555
+                        },
                     ]
                 }
             },
         ))
+    }
 }
 
 
